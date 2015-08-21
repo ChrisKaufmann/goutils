@@ -2,6 +2,7 @@ package goutils
 
 import (
 	"crypto/sha1"
+	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"html/template"
@@ -25,6 +26,14 @@ func PathVars(r *http.Request, root string, vals ...*string) {
 		}
 	}
 }
+func Sth(db *sql.DB, s string) (a *sql.Stmt, err error) {
+	a, err = db.Prepare(s)
+	if err != nil {
+		err.Error()
+		fmt.Println(err)
+	}
+	return a, err
+}
 func Evenodd(i int) string {
 	if i%2 == 0 {
 		return "even"
@@ -41,6 +50,8 @@ func Tostr(i interface{}) string {
 		return strconv.FormatBool(i.(bool))
 	case template.HTML:
 		return string(i.(template.HTML))
+	case []byte:
+		return string(i.([]byte))
 	default:
 		t = t
 	}
@@ -51,22 +62,22 @@ func Toint(s string) int {
 	return i
 }
 
-func Shuffle(data interface{})  {
-	switch t:= interface{}(data).(type){
-		case *[]int:
-			a := data.(*[]int)
-			data= Shufflei(*a)
-		case *[]string:
-			a := data.(*[]string)
-			data= Shuffles(*a)
-		default:
-			fmt.Printf("unexpected type %T", t) 
+func Shuffle(data interface{}) {
+	switch t := interface{}(data).(type) {
+	case *[]int:
+		a := data.(*[]int)
+		data = Shufflei(*a)
+	case *[]string:
+		a := data.(*[]string)
+		data = Shuffles(*a)
+	default:
+		fmt.Printf("unexpected type %T", t)
 	}
 }
 func Shuffles(slc []string) []string {
 	rand.Seed(time.Now().UnixNano())
 	N := len(slc)
-	for i :=0; i < N; i++ {
+	for i := 0; i < N; i++ {
 		r := i + rand.Intn(N-i)
 		slc[r], slc[i] = slc[i], slc[r]
 	}
@@ -106,6 +117,6 @@ func Ef(err error) {
 }
 func Ew(err error) {
 	if err != nil {
-		print("WARN: "+err.Error())
+		print("WARN: " + err.Error())
 	}
 }
