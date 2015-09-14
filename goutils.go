@@ -29,8 +29,8 @@ func PathVars(r *http.Request, root string, vals ...*string) {
 func Sth(db *sql.DB, s string) (a *sql.Stmt, err error) {
 	a, err = db.Prepare(s)
 	if err != nil {
-		err.Error()
 		fmt.Println(err)
+		err.Error()
 	}
 	return a, err
 }
