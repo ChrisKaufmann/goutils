@@ -29,10 +29,33 @@ func PathVars(r *http.Request, root string, vals ...*string) {
 func Sth(db *sql.DB, s string) (a *sql.Stmt, err error) {
 	a, err = db.Prepare(s)
 	if err != nil {
-		err.Error()
 		fmt.Println(err)
+		err.Error()
 	}
 	return a, err
+}
+func Average(inputs interface{})(a float64) {
+	var sum float64
+	if f, ok := inputs.([]float64); ok {
+		for _, i := range f {
+			sum = sum + float64(i)
+		}
+		return sum / float64(len(f))
+	}
+	if f, ok := inputs.([]float32); ok {
+		for _, i := range f {
+			sum = sum + float64(i)
+		}
+		return sum / float64(len(f))
+	}
+	if f, ok := inputs.([]int); ok {
+		for _, i := range f {
+			sum = sum + float64(i)
+		}
+		return sum / float64(len(f))
+	}
+
+	return a
 }
 func Evenodd(i int) string {
 	if i%2 == 0 {
